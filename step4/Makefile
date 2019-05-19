@@ -1,7 +1,15 @@
-1cc: 1cc.c
-	gcc -g 1cc.c -o 1cc
+CC = gcc
+CFLAGS = -Wall -g -Wextra
+OBJ = error.o main.o tokenizer.o parser.o gen.o
 
-test: 1cc
+
+%.o: %.c 1cc.h Makefile
+	$(CC) $(CFLAGS) -c $*.c
+
+main: $(OBJ) Makefile
+	$(CC) $(CFLAGS) -o 1cc $(OBJ)
+
+test: main
 	./test.sh
 
 clean:
