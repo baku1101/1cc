@@ -7,13 +7,6 @@
 
 Vector *tokens;
 
-Token *new_token() {
-	Token *tkn = malloc(sizeof(Token));
-	tkn->ty = 0;
-	tkn->val = 0;
-	tkn->input = "hoge";
-	return tkn;
-}
 
 void tokenize() {
 	tokens = new_vector();
@@ -21,7 +14,7 @@ void tokenize() {
 
 	int i = 0;
 	while (*p) {
-		Token *token = new_token();
+		Token *token = malloc(sizeof(Token));
 		// 空白文字をスキップ
 		if (isspace(*p)) {
 			p++;
@@ -94,7 +87,7 @@ void tokenize() {
 		error_at(p, "トークナイズできません");
 	}
 
-	Token *token = new_token();
+	Token *token = malloc(sizeof(Token));
 	token->ty = TK_EOF;
 	token->input = p;
 	vec_push(tokens, token);

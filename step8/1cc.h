@@ -37,7 +37,6 @@ extern char *user_input;
 // トークナイズした結果のトークン列
 extern Vector *tokens;
 
-Token *new_token();
 void tokenize();
 
 //============================================================================================
