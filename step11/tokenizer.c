@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "1cc.h"
 // user_inputが指している文字列を
@@ -92,12 +93,21 @@ void tokenize() {
 		}
 
 		if ('a' <= *p && *p <= 'z') {
+			int len;
+			for (len = 0;; len++) {
+				if (!is_alnum(p[len])) {
+					break;
+				}
+			}
+			char tmp;
+			char *name = &tmp;
+			memcpy(name, p, len);
 			token->ty = TK_IDENT;
-			token->name = *p;
+			token->name = name;
 			token->input = p;
 			vec_push(tokens, token);
 			i++;
-			p++;
+			p += len;
 			continue;
 		}
 
