@@ -3,8 +3,34 @@
 
 #include "1cc.h"
 
-// vector test
-void vec_expect(int line, int expected, int actual) {
+
+void test_vec() {
+	Vector *vec = new_vector();
+	expect(__LINE__, 0, vec->len);
+
+	for (int i = 0; i < 100; i++) vec_push(vec, (void *)i);
+
+	expect(__LINE__, 100, vec->len);
+	expect(__LINE__, 0, (long)vec->data[0]);
+	expect(__LINE__, 50, (long)vec->data[50]);
+	expect(__LINE__, 99, (long)vec->data[99]);
+}
+
+void test_map() {
+	Map *map = new_map();
+	expect(__LINE__, 0, (long)map_get(map, "foo"));
+
+	map_put(map, "foo", (void *)2);
+	expect(__LINE__, 2, (long)map_get(map, "foo"));
+
+	map_put(map, "bar", (void *)4);
+	expect(__LINE__, 4, (long)map_get(map, "bar"));
+
+	map_put(map, "foo", (void *)6);
+	expect(__LINE__, 6, (long)map_get(map, "foo"));
+}
+
+void expect(int line, int expected, int actual) {
 	if (expected == actual) {
 		return;
 	}
@@ -13,15 +39,8 @@ void vec_expect(int line, int expected, int actual) {
 
 }
 
-void vec_runtest() {
-	Vector *vec = new_vector();
-	vec_expect(__LINE__, 0, vec->len);
-
-	for (int i = 0; i < 100; i++) vec_push(vec, (void *)i);
-
-	vec_expect(__LINE__, 100, vec->len);
-	vec_expect(__LINE__, 0, (long)vec->data[0]);
-	vec_expect(__LINE__, 50, (long)vec->data[50]);
-	vec_expect(__LINE__, 99, (long)vec->data[99]);
+void runtest() {
+	test_vec();
+	test_map();
 	printf("OK\n");
 }

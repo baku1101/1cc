@@ -3,6 +3,7 @@
 
 //============================================================================================
 // container
+/// vector
 typedef struct {
 	void **data;
 	int capacity;
@@ -11,6 +12,17 @@ typedef struct {
 
 Vector *new_vector();
 void vec_push(Vector *vec, void *elem);
+
+/// map
+typedef struct {
+	Vector *keys;
+	Vector *vals;
+} Map;
+
+Map *new_map();
+void map_put();
+void *map_get();
+
 
 //============================================================================================
 // tokenizer
@@ -100,7 +112,9 @@ void error_at(char *loc, char *msg);
 //============================================================================================
 // test
 
-void vec_expect(int line, int expected, int actual);
-void vec_runtest();
+void test_vec();
+void test_map();
+void expect(int line, int expected, int actual);
+void runtest();
 
 #endif
