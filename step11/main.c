@@ -8,29 +8,6 @@
 
 char *user_input;
 
-// vector test
-void expect(int line, int expected, int actual) {
-	if (expected == actual) {
-		return;
-	}
-	fprintf(stderr, "%d: %d expected, but got %d\n", line, expected, actual);
-	exit(1);
-
-}
-
-void runtest() {
-	Vector *vec = new_vector();
-	expect(__LINE__, 0, vec->len);
-
-	for (int i = 0; i < 100; i++) vec_push(vec, (void *)i);
-
-	expect(__LINE__, 100, vec->len);
-	expect(__LINE__, 0, (long)vec->data[0]);
-	expect(__LINE__, 50, (long)vec->data[50]);
-	expect(__LINE__, 99, (long)vec->data[99]);
-	printf("OK\n");
-}
-
 int main(int argc, char **argv) {
 	if (argc != 2) {
 		error("引数の個数が正しくありません");
@@ -38,7 +15,7 @@ int main(int argc, char **argv) {
 	}
 
 	if (!strcmp(argv[1],"-test")) {
-		runtest();
+		vec_runtest();
 		return 0;
 	}
 

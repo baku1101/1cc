@@ -97,4 +97,10 @@ void error(char *fmt, ...);
 // エラー箇所を報告するための関数
 void error_at(char *loc, char *msg);
 
+//============================================================================================
+// test
+
+void vec_expect(int line, int expected, int actual);
+void vec_runtest();
+
 #endif
