@@ -81,6 +81,7 @@ main() {
 	try 3 "z=1;a=2;a+z;"
 	try 1 "return 1;"
 	try 3 "a=2;b=1;return a+b;"
+	try 2 "a=2;return a;return 0;"
 	try 2 "hoge=2;return hoge;"
 	try 4 "hoge=2;fuga=2;return hoge*fuga;"
 

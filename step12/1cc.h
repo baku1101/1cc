@@ -35,6 +35,10 @@ enum {
 	TK_LE,			// <= (less than or equal)
 	TK_GE,			// >= (greater than or equal)
 	TK_RETURN,		// returnトークン
+	TK_IF,			// ifトークン
+	TK_ELSE,		// elseトークン
+	TK_FOR,			// forトークン
+	TK_WHILE,		// whileトークン
 	TK_EOF,			// 入力の終わりを表すトークン
 };
 
