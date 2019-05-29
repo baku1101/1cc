@@ -5,8 +5,22 @@
 // tokens[]のインデックス
 int pos = 0;
 
-// ノードの配列
+// extern
 Vector *code;
+Map *valmap;
+int numval;
+
+void register_val(char *name) {
+	// valmapに入っていなかったら登録
+	if (map_get(valmap, name) == NULL) {
+		numval++;
+		int *offset = malloc(sizeof(int));
+		*offset = numval * 8;
+		map_put(valmap, name, offset);
+	}
+	// 登録済みなら特になし
+	return;
+}
 
 // ノード作成(2項演算子用)
 Node *new_node(int ty, Node *lhs, Node *rhs) {
@@ -25,13 +39,14 @@ Node *new_node_num(int val) {
 	return node;
 }
 
-// ノード作成(識別子用(1文字限定))
-Node *new_node_ident(char name) {
+// ノード作成(識別子用)
+Node *new_node_ident(char *name) {
 	Node *node = malloc(sizeof(Node));
 	node->ty = ND_IDENT;
 	node->name = name;
 	return node;
 }
+
 // 次のトークンが期待した型かどうかをチェックする
 int consume(int ty) {
 	if (((Token *)tokens->data[pos])->ty != ty) return 0;
@@ -42,6 +57,8 @@ int consume(int ty) {
 // パーサ本体
 void program() {
 	code = new_vector();
+	valmap = new_map();
+	numval = 0;
 	while (!consume(TK_EOF)) {
 		vec_push(code, stmt());
 	}
@@ -132,7 +149,9 @@ Node *term() {
 	}
 
 	if (((Token *)tokens->data[pos])->ty == TK_IDENT) {
-		return new_node_ident(((Token *)tokens->data[pos++])->name);
+		char *name = ((Token *)tokens->data[pos++])->name;
+		register_val(name);
+		return new_node_ident(name);
 	}
 
 	error_at(((Token *)tokens->data[pos])->input, "数値でも開き括弧でも無いトークンです");

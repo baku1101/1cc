@@ -99,8 +99,7 @@ void tokenize() {
 					break;
 				}
 			}
-			char tmp;
-			char *name = &tmp;
+			char *name = malloc(sizeof(char));
 			memcpy(name, p, len);
 			token->ty = TK_IDENT;
 			token->name = name;

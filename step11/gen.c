@@ -8,9 +8,9 @@ void gen_lval(Node *node) {
 	}
 
 	// 変数のアドレスをスタックにpushする
-	int offset = ('z' - node->name + 1) * 8;
+	int *offset = map_get(valmap, node->name);
 	printf("  mov rax, rbp\n");
-	printf("  sub rax, %d\n", offset);
+	printf("  sub rax, %d\n", *offset);
 	printf("  push rax\n");
 }
 

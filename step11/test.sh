@@ -53,9 +53,9 @@ main() {
 		actual="$?"
 
 		if [ "$actual" = "$expected" ]; then
-			echo "$input => $actual"
+			echo "$input => $actual \e[32;1mOK\e[m"
 		else
-			echo "$expected expected, but got $actual"
+			echo "$input => $actual \e[31;1mFAILED\e[m\n$expected expected, but got $actual"
 			exit 1
 		fi
 	}
@@ -81,6 +81,8 @@ main() {
 	try 3 "z=1;a=2;a+z;"
 	try 1 "return 1;"
 	try 3 "a=2;b=1;return a+b;"
+	try 2 "hoge=2;return hoge;"
+	try 4 "hoge=2;fuga=2;return hoge*fuga;"
 
 	echo OK
 }

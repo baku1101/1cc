@@ -20,8 +20,8 @@ typedef struct {
 } Map;
 
 Map *new_map();
-void map_put();
-void *map_get();
+void map_put(Map *map, char *key, void *val);
+void *map_get(Map *map, char *key);
 
 
 //============================================================================================
@@ -71,7 +71,7 @@ typedef struct Node {
 	struct Node *lhs;	// 左辺(left-hand side)
 	struct Node *rhs;	// 右辺(right-hand side)
 	int val;			// tyがND_NUMの場合に値が入る
-	char name;			// tyがND_IDENTの場合に変数名が入る
+	char *name;			// tyがND_IDENTの場合に変数名が入る
 } Node;
 
 // ノード作成(2項演算子用)
@@ -80,6 +80,8 @@ Node *new_node(int ty, Node *lhs, Node *rhs);
 Node *new_node_num(int val);
 // 次のトークンが期待した型かどうかをチェックする
 int consume(int ty);
+// 変数を登録する
+void register_val(char *name);
 
 // パーサ本体
 
@@ -96,6 +98,10 @@ Node *term();
 
 // ノードの配列
 extern Vector *code;
+// 変数を格納するmap, <変数名，スタックのoffset>
+extern Map *valmap;
+// 変数の数を格納(その分rspを下げる)
+extern int numval;
 
 //============================================================================================
 // generate
