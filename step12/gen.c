@@ -2,6 +2,9 @@
 
 #include "1cc.h"
 
+// ラベル番号
+int l_num = 0;
+
 void gen_lval(Node *node) {
 	if (node->ty != ND_IDENT) {
 		error("代入の左辺値が変数ではありません");
@@ -41,11 +44,31 @@ void gen(Node *node) {
 	}
 
 	if (node->ty == ND_RETURN) {
-		gen(node->lhs);
+		gen(node->expr);
 		printf("  pop rax\n");
 		printf("  mov rsp, rbp\n");
 		printf("  pop rbp\n");
 		printf("  ret\n");
+		return;
+	}
+
+	if (node->ty == ND_IF) {
+		gen(node->cond);
+		printf("  pop rax\n");
+		printf("  cmp rax, 0\n");
+		if (node->els == NULL) {
+			printf("  je  .Lend%d\n", l_num++);
+			gen(node->then);
+			printf(".Lend%d:\n", --l_num);
+		}
+		else {
+			printf("  je  .Lelse%d\n", l_num);
+			gen(node->then);
+			printf("  jmp  .Lend%d\n", l_num);
+			printf(".Lelse%d:\n", l_num++);
+			gen(node->els);
+			printf(".Lend%d:\n",--l_num);
+		}
 		return;
 	}
 
@@ -91,6 +114,8 @@ void gen(Node *node) {
 			printf("  cqo\n"); // raxの64bitの値を128bitに伸ばしてrdx,raxにセット
 			printf("  idiv rdi\n");
 			break;
+		default:
+			error("パースしたけどgenerateする命令が無いよ");
 	}
 
 	// 演算結果はスタックに格納

@@ -84,6 +84,10 @@ main() {
 	try 2 "a=2;return a;return 0;"
 	try 2 "hoge=2;return hoge;"
 	try 4 "hoge=2;fuga=2;return hoge*fuga;"
+	try 5 "if(1==1) 5;"
+	try 2 "if(1!=1) 5; else 2;"
+	try 3 "if(0) 5; else if(0) 2; else 3;"
+	try 2 "if(0) 5; else if(1) 2; else 3;"
 
 	echo OK
 }

@@ -70,7 +70,24 @@ Node *stmt() {
 	if (consume(TK_RETURN)) {
 		node = malloc(sizeof(Node));
 		node->ty = ND_RETURN;
-		node->lhs = expr();
+		node->expr = expr();
+	}
+	else if (consume(TK_IF)) {
+		if (!consume('(')) {
+			error_at(((Token *)tokens->data[pos])->input, "ifの次のトークンが'('ではないです");
+		}
+		node = malloc(sizeof(Node));
+		node->ty = ND_IF;
+		node->cond = expr();
+		if (!consume(')')) {
+			error_at(((Token *)tokens->data[pos])->input, "開き括弧に対応する閉じ括弧がありません");
+		}
+		node->then = stmt();
+		node->els = NULL;
+		if (consume(TK_ELSE)) {
+			node->els = stmt();
+		}
+		return node;
 	}
 	else {
 		node = expr();
@@ -127,11 +144,11 @@ Node *mul() {
 	}
 }
 
+
 Node *unary() {
 	if (consume('+')) return term();
 	if (consume('-')) return new_node('-', new_node_num(0), term());
 	return term();
-
 }
 
 Node *term() {
@@ -154,6 +171,6 @@ Node *term() {
 		return new_node_ident(name);
 	}
 
-	error_at(((Token *)tokens->data[pos])->input, "数値でも開き括弧でも無いトークンです");
-	return 0; // ここまではこないはず
+	error_at(((Token *)tokens->data[pos])->input, "期待しないトークンです");
+	return NULL; // ここまではこないはず
 }

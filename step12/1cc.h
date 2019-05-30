@@ -67,15 +67,27 @@ enum {
 	ND_NE,			// != (not equal)
 	ND_LE,			// <= (less than or equal)
 	ND_RETURN,  	// returnノード
+	ND_IF,			// ifノード
+	ND_ELSE,		// elseノード
+	ND_FOR,			// forノード
+	ND_WHILE,		// whileノード
 };
 
 // 抽象構文木のノードの型
 typedef struct Node {
-	int ty;				// 演算子かND_NUM
-	struct Node *lhs;	// 左辺(left-hand side)
-	struct Node *rhs;	// 右辺(right-hand side)
-	int val;			// tyがND_NUMの場合に値が入る
-	char *name;			// tyがND_IDENTの場合に変数名が入る
+	int ty;					// Node type
+	struct Node *lhs;		// 左辺(left-hand side)
+	struct Node *rhs;		// 右辺(right-hand side)
+	struct Node *expr;
+
+	struct Node *cond;		// "if" ( cond ) then "else" els
+	struct Node *then;
+	struct Node *els;
+	struct Node *init;		// "for" (init; cond; inc) body, "while" (cond) body
+	struct Node *inc;
+	struct Node *body;
+	int val;				// tyがND_NUMの場合に値が入る
+	char *name;				// tyがND_IDENTの場合に変数名が入る
 } Node;
 
 // ノード作成(2項演算子用)
@@ -125,11 +137,13 @@ extern int numval;
 
 //============================================================================================
 // generate
+
 void gen(Node *node);
 
 
 //============================================================================================
 // error
+
 // エラーを報告するための関数, printfと同じ引数を取る
 void error(char *fmt, ...);
 // エラー箇所を報告するための関数
