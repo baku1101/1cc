@@ -3,7 +3,7 @@
 #include "1cc.h"
 
 // ラベル番号
-int l_num = 0;
+int lavel_counter = 0;
 
 void gen_lval(Node *node) {
 	if (node->ty != ND_IDENT) {
@@ -56,18 +56,25 @@ void gen(Node *node) {
 		gen(node->cond);
 		printf("  pop rax\n");
 		printf("  cmp rax, 0\n");
+		// if(cond) then で thenが実行され無い時にもダミーとしてスタックに1つ値を残す必要があるため
+		printf("  push 0\n");
+		int l_num = lavel_counter;
+		lavel_counter++;
 		if (node->els == NULL) {
-			printf("  je  .Lend%d\n", l_num++);
+			printf("  je  .Lend%d\n", l_num);
+			printf("  pop rax\n"); // ダミーを取り出してから始める
 			gen(node->then);
-			printf(".Lend%d:\n", --l_num);
+			printf(".Lend%d:\n", l_num);
 		}
 		else {
 			printf("  je  .Lelse%d\n", l_num);
+			printf("  pop rax\n"); // ダミーを取り出してから始める
 			gen(node->then);
 			printf("  jmp  .Lend%d\n", l_num);
-			printf(".Lelse%d:\n", l_num++);
+			printf(".Lelse%d:\n", l_num);
+			printf("  pop rax\n"); // ダミーを取り出してから始める
 			gen(node->els);
-			printf(".Lend%d:\n",--l_num);
+			printf(".Lend%d:\n",l_num);
 		}
 		return;
 	}

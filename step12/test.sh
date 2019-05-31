@@ -88,6 +88,10 @@ main() {
 	try 2 "if(1!=1) 5; else 2;"
 	try 3 "if(0) 5; else if(0) 2; else 3;"
 	try 2 "if(0) 5; else if(1) 2; else 3;"
+	try 2 "if(0) 5; if(1) 2;"
+	try 2 "if(0) a=5; if(1) a=2;return a;"
+	try 5 "if(1) a=5; if(0) a=2;return a;"
+
 
 	echo OK
 }

@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 	printf("main:\n");
 
 	// プロローグ
-	// 変数26個分の領域を確保する
+	// 変数の領域を確保する
 	printf("  push rbp\n");
 	printf("  mov rbp, rsp\n");
 	printf("  sub rsp, %d\n", numval*8);
