@@ -47,10 +47,11 @@ Node *new_node_ident(char *name) {
 	return node;
 }
 
+// ifノード作成
 Node *new_node_if() {
 	Node *node;
 	if (!consume('(')) {
-		error_at(((Token *)tokens->data[pos])->input, "ifの次のトークンが'('ではないです");
+		error_at(((Token *)tokens->data[pos])->input, "'if'の次のトークンが'('ではないです");
 	}
 	node = malloc(sizeof(Node));
 	node->ty = ND_IF;
@@ -63,6 +64,40 @@ Node *new_node_if() {
 	if (consume(TK_ELSE)) {
 		node->els = stmt();
 	}
+	return node;
+}
+
+// forノード作成
+Node *new_node_for() {
+	Node *node;
+	if (!consume('(')) {
+		error_at(((Token *)tokens->data[pos])->input, "'for'の次のトークンが'('ではないです");
+	}
+	node = malloc(sizeof(Node));
+	node->ty = ND_FOR;
+	node->init = consume(';') ? NULL : stmt();
+	node->cond = consume(';') ? NULL : stmt();
+	node->inc  = consume(';') ? NULL : expr();
+	if (!consume(')')) {
+		error_at(((Token *)tokens->data[pos])->input, "開き括弧に対応する閉じ括弧がありません");
+	}
+	node->body = stmt();
+	return node;
+}
+
+// whileノード作成
+Node *new_node_while() {
+	Node *node;
+	if (!consume('(')) {
+		error_at(((Token *)tokens->data[pos])->input, "'for'の次のトークンが'('ではないです");
+	}
+	node = malloc(sizeof(Node));
+	node->ty = ND_WHILE;
+	node->cond = expr();
+	if (!consume(')')) {
+		error_at(((Token *)tokens->data[pos])->input, "開き括弧に対応する閉じ括弧がありません");
+	}
+	node->body = stmt();
 	return node;
 }
 
@@ -93,6 +128,14 @@ Node *stmt() {
 	}
 	else if (consume(TK_IF)) {
 		node = new_node_if();
+		return node;
+	}
+	else if (consume(TK_FOR)) {
+		node = new_node_for();
+		return node;
+	}
+	else if (consume(TK_WHILE)) {
+		node = new_node_while();
 		return node;
 	}
 	else {
