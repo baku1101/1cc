@@ -81,7 +81,7 @@ Node *new_node_for() {
 	if (!consume(')')) {
 		error_at(((Token *)tokens->data[pos])->input, "開き括弧に対応する閉じ括弧がありません");
 	}
-	node->body = stmt();
+	node->body = consume(';') ? NULL : stmt();
 	return node;
 }
 

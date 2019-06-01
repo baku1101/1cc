@@ -21,7 +21,7 @@ void gen_if(Node *node) {
 		gen(node->cond);
 		printf("  pop rax\n");
 		printf("  cmp rax, 0\n");
-		// if(cond) then で thenが実行され無い時にもダミーとしてスタックに1つ値を残す必要があるため
+		// if(cond) then で thenが実行され無い時にもダミーとしてスタックに1つ値を残す必要がある
 		printf("  push 0\n");
 		int l_num = lavel_counter;
 		lavel_counter++;
@@ -41,6 +41,37 @@ void gen_if(Node *node) {
 			gen(node->els);
 			printf(".Lend%d:\n",l_num);
 		}
+}
+
+void gen_for(Node *node) {
+	int l_num = lavel_counter;
+	lavel_counter++;
+	printf("push 0\n"); // ダミー
+	if (node->init != NULL) {
+		gen(node->init);
+		printf("  pop rax\n");
+	}
+	printf(".Lbegin%d:\n", l_num);
+	if (node->cond != NULL) {
+		gen(node->cond);
+		printf("  pop rax\n");
+		printf("  cmp rax, 0\n");
+		printf("  je  .Lend%d\n", l_num);
+	}
+	if (node->body != NULL) {
+		gen(node->body);
+		printf("pop rax\n");
+	}
+	if (node->inc != NULL) {
+		gen(node->inc);
+		printf("pop rax\n");
+	}
+	printf("  jmp .Lbegin%d\n", l_num);
+	printf(".Lend%d:\n", l_num);
+}
+
+void gen_while(Node *node) {
+
 }
 
 // アセンブラを用いたスタックマシンの生成
@@ -80,6 +111,16 @@ void gen(Node *node) {
 
 	if (node->ty == ND_IF) {
 		gen_if(node);
+		return;
+	}
+
+	if (node->ty == ND_FOR) {
+		gen_for(node);
+		return;
+	}
+
+	if (node->ty == ND_WHILE) {
+		gen_while(node);
 		return;
 	}
 
