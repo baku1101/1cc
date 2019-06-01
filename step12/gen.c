@@ -17,6 +17,32 @@ void gen_lval(Node *node) {
 	printf("  push rax\n");
 }
 
+void gen_if(Node *node) {
+		gen(node->cond);
+		printf("  pop rax\n");
+		printf("  cmp rax, 0\n");
+		// if(cond) then で thenが実行され無い時にもダミーとしてスタックに1つ値を残す必要があるため
+		printf("  push 0\n");
+		int l_num = lavel_counter;
+		lavel_counter++;
+		if (node->els == NULL) {
+			printf("  je  .Lend%d\n", l_num);
+			printf("  pop rax\n"); // ダミーを取り出してから始める
+			gen(node->then);
+			printf(".Lend%d:\n", l_num);
+		}
+		else {
+			printf("  je  .Lelse%d\n", l_num);
+			printf("  pop rax\n"); // ダミーを取り出してから始める
+			gen(node->then);
+			printf("  jmp  .Lend%d\n", l_num);
+			printf(".Lelse%d:\n", l_num);
+			printf("  pop rax\n"); // ダミーを取り出してから始める
+			gen(node->els);
+			printf(".Lend%d:\n",l_num);
+		}
+}
+
 // アセンブラを用いたスタックマシンの生成
 void gen(Node *node) {
 	if (node->ty == ND_NUM) {
@@ -53,29 +79,7 @@ void gen(Node *node) {
 	}
 
 	if (node->ty == ND_IF) {
-		gen(node->cond);
-		printf("  pop rax\n");
-		printf("  cmp rax, 0\n");
-		// if(cond) then で thenが実行され無い時にもダミーとしてスタックに1つ値を残す必要があるため
-		printf("  push 0\n");
-		int l_num = lavel_counter;
-		lavel_counter++;
-		if (node->els == NULL) {
-			printf("  je  .Lend%d\n", l_num);
-			printf("  pop rax\n"); // ダミーを取り出してから始める
-			gen(node->then);
-			printf(".Lend%d:\n", l_num);
-		}
-		else {
-			printf("  je  .Lelse%d\n", l_num);
-			printf("  pop rax\n"); // ダミーを取り出してから始める
-			gen(node->then);
-			printf("  jmp  .Lend%d\n", l_num);
-			printf(".Lelse%d:\n", l_num);
-			printf("  pop rax\n"); // ダミーを取り出してから始める
-			gen(node->els);
-			printf(".Lend%d:\n",l_num);
-		}
+		gen_if(node);
 		return;
 	}
 
