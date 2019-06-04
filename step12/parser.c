@@ -91,6 +91,9 @@ Node *new_node_while() {
 	if (!consume('(')) {
 		error_at(((Token *)tokens->data[pos])->input, "'for'の次のトークンが'('ではないです");
 	}
+	if (consume(')')) {
+		error_at(((Token *)tokens->data[pos])->input, "'条件式が必要です");
+	}
 	node = malloc(sizeof(Node));
 	node->ty = ND_WHILE;
 	node->cond = expr();

@@ -2,7 +2,7 @@
 
 #include "1cc.h"
 
-// ラベル番号
+// 通しのラベル番号
 int lavel_counter = 0;
 
 void gen_lval(Node *node) {
@@ -71,7 +71,20 @@ void gen_for(Node *node) {
 }
 
 void gen_while(Node *node) {
-
+	int l_num = lavel_counter;
+	lavel_counter++;
+	printf("push 0\n"); // ダミー
+	printf(".Lbegin%d:\n", l_num);
+	gen(node->cond);
+	printf("  pop rax\n");
+	printf("  cmp rax, 0\n");
+	printf("  je  .Lend%d\n", l_num);
+	if (node->body != NULL) {
+		gen(node->body);
+		printf("  pop rax\n");
+	}
+	printf("  jmp .Lbegin%d\n", l_num);
+	printf(".Lend%d:\n", l_num);
 }
 
 // アセンブラを用いたスタックマシンの生成

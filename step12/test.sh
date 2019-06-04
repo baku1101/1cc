@@ -102,6 +102,8 @@ main() {
 	try 36 "b = 0;for(a = 1; a < 4; a = a+1) b = b + a;for(a = 1; a < 4; a = a+1) b = b * a;return b;"
 	try 30 "b = 0;for(a = 0; a < 10; a = a+1) if(a>5) b = b + a;return b;"
 	try 6 "b = 0;for(;;b = b+1) if(b > 5) return b;"
+	try 6 "b = 0;while(b<6) b = b+1;return b;"
+	try 8 "b = 1;while(b<6) b = b*2;return b;"
 
 
 	echo OK
