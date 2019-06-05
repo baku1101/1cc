@@ -109,7 +109,7 @@ Node *new_node_block() {
 	Node *node = malloc(sizeof(Node));
 	node->stmt_vec = new_vector();
 	node->ty = ND_BLOCK;
-	while (consume('}')) {
+	while (!consume('}')) {
 		vec_push(node->stmt_vec, stmt());
 	}
 	return node;
@@ -141,7 +141,7 @@ Node *stmt() {
 		node->expr = expr();
 	}
 	else if (consume('{')) {
-		node = stmt();
+		node = new_node_block();
 		return node;
 	}
 	else if (consume(TK_IF)) {
