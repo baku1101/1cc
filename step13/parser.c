@@ -104,6 +104,17 @@ Node *new_node_while() {
 	return node;
 }
 
+// blockノード作成
+Node *new_node_block() {
+	Node *node = malloc(sizeof(Node));
+	node->stmt_vec = new_vector();
+	node->ty = ND_BLOCK;
+	while (consume('}')) {
+		vec_push(node->stmt_vec, stmt());
+	}
+	return node;
+}
+
 // 次のトークンが期待した型かどうかをチェックする
 int consume(int ty) {
 	if (((Token *)tokens->data[pos])->ty != ty) return 0;
@@ -128,6 +139,10 @@ Node *stmt() {
 		node = malloc(sizeof(Node));
 		node->ty = ND_RETURN;
 		node->expr = expr();
+	}
+	else if (consume('{')) {
+		node = stmt();
+		return node;
 	}
 	else if (consume(TK_IF)) {
 		node = new_node_if();

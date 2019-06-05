@@ -71,6 +71,7 @@ enum {
 	ND_ELSE,		// elseノード
 	ND_FOR,			// forノード
 	ND_WHILE,		// whileノード
+	ND_BLOCK,		// { ... }
 };
 
 // 抽象構文木のノードの型
@@ -86,14 +87,21 @@ typedef struct Node {
 	struct Node *init;		// "for" (init; cond; inc) body, "while" (cond) body
 	struct Node *inc;
 	struct Node *body;
+
+	Vector *stmt_vec;
+
 	int val;				// tyがND_NUMの場合に値が入る
 	char *name;				// tyがND_IDENTの場合に変数名が入る
 } Node;
 
-// ノード作成(2項演算子用)
+// ノード作成関数
 Node *new_node(int ty, Node *lhs, Node *rhs);
-// ノード作成(数値用)
 Node *new_node_num(int val);
+Node *new_node_ident(char *name);
+Node *new_node_if();
+Node *new_node_for();
+Node *new_node_while();
+Node *new_node_block();
 // 次のトークンが期待した型かどうかをチェックする
 int consume(int ty);
 // 変数を登録する
@@ -103,6 +111,7 @@ void register_val(char *name);
 /* 文法
 	program 	= stmt*
 	stmt    	= expr ";"
+				| "{" stmt* "}"
 				| "if" "(" expr ")" stmt ("else" stmt)?
 				| "while" "(" expr ")" stmt
 				| "for" "(" expr? ";" expr? ";" expr? ")" stmt
