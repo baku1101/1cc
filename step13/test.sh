@@ -90,6 +90,7 @@ main() {
 	try 4 "hoge=2;fuga=2;return hoge*fuga;"
 
 	# 制御構文
+	# if
 	try 5 "if(1==1) 5;"
 	try 2 "if(1!=1) 5; else 2;"
 	try 3 "if(0) 5; else if(0) 2; else 3;"
@@ -97,14 +98,18 @@ main() {
 	try 2 "if(0) 5; if(1) 2;"
 	try 2 "if(0) a=5; if(1) a=2;return a;"
 	try 5 "if(1) a=5; if(0) a=2;return a;"
+	# for
 	try 6 "b = 0;for(a = 1; a < 4; a = a+1) b = b + a;return b;"
 	try 4 "b = 0;for(a = 1; a < 4; a = a+1) b = b + a;return a;"
 	try 36 "b = 0;for(a = 1; a < 4; a = a+1) b = b + a;for(a = 1; a < 4; a = a+1) b = b * a;return b;"
 	try 30 "b = 0;for(a = 0; a < 10; a = a+1) if(a>5) b = b + a;return b;"
 	try 6 "b = 0;for(;;b = b+1) if(b > 5) return b;"
+	# while
 	try 6 "b = 0;while(b<6) b = b+1;return b;"
 	try 8 "b = 1;while(b<6) b = b*2;return b;"
-
+	# block
+	try 2 "a = 1;if(a == 1) {b = 2; return b;} else return a;"
+	try 1 "a = 1;if(a == 0) {b = 2; return b;} else return a;"
 
 	echo OK
 }

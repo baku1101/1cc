@@ -137,6 +137,14 @@ void gen(Node *node) {
 		return;
 	}
 
+	if (node->ty == ND_BLOCK) {
+		for (int i = 0;i < node->stmt_vec->len; i++) {
+			gen(node->stmt_vec->data[i]);
+			printf("  pop rax\n");
+		}
+		return;
+	}
+
 	gen(node->lhs); // 左の木をコンパイル
 	gen(node->rhs); // 右の木をコンパイル
 
