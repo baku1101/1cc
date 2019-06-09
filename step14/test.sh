@@ -48,7 +48,9 @@ main() {
 		input="$2"
 
 		./1cc "$input" > tmp.s
-		gcc -o tmp tmp.s
+		gcc -c test_call.c -o test_call.o
+		gcc -c tmp.s -o tmp.o
+		gcc -o tmp tmp.o test_call.o
 		./tmp
 		actual="$?"
 
@@ -112,7 +114,13 @@ main() {
 	try 1 "a = 1;if(a == 0) {b = 2; return b;} else return a;"
 
 	# 関数呼び出し
-	try 2 "foo();"
+	try 0 "call0();"
+	try 1 "call1(1);"
+	try 2 "call2(1,1);"
+	try 4 "call3(1,1,2);"
+	try 20 "call6(1,1,2,3,5,8);"
+	try 2 "a=2;call1(a);"
+	try 3 "a=2;b=1;call2(a,b);"
 
 	echo OK
 }

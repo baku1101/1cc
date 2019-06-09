@@ -21,8 +21,8 @@ void gen_if(Node *node) {
 		gen(node->cond);
 		printf("  pop rax\n");
 		printf("  cmp rax, 0\n");
-		// if(cond) then で thenが実行され無い時にもダミーとしてスタックに1つ値を残す必要がある
-		printf("  push 0\n");
+		// if(cond) then で thenが実行され無い時にもダミーとしてスタックに1つ値を残す必要がある(とりあえずrax)
+		printf("  push rax\n");
 		int l_num = lavel_counter;
 		lavel_counter++;
 		if (node->els == NULL) {
@@ -46,7 +46,7 @@ void gen_if(Node *node) {
 void gen_for(Node *node) {
 	int l_num = lavel_counter;
 	lavel_counter++;
-	printf("push 0\n"); // ダミー
+	printf("push rax\n"); // ダミー
 	if (node->init != NULL) {
 		gen(node->init);
 		printf("  pop rax\n");
@@ -73,7 +73,7 @@ void gen_for(Node *node) {
 void gen_while(Node *node) {
 	int l_num = lavel_counter;
 	lavel_counter++;
-	printf("push 0\n"); // ダミー
+	printf("push rax\n"); // ダミー
 	printf(".Lbegin%d:\n", l_num);
 	gen(node->cond);
 	printf("  pop rax\n");
@@ -159,7 +159,7 @@ void gen(Node *node) {
 			}
 		}
 		printf("  call %s\n",node->name);
-		printf("  push 1\n"); // ダミー
+		printf("  push rax\n");
 		return;
 	}
 
