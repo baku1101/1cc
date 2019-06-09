@@ -47,11 +47,17 @@ Node *new_node_ident(char *name) {
 	return node;
 }
 
-// callノード作成(引数なし)
+// callノード作成
 Node *new_node_call(char *name) {
 	Node *node = malloc(sizeof(Node));
 	node->ty = ND_CALL;
 	node->name = name;
+	node->stmt_vec = new_vector();
+	while (!consume(')')) {
+		Node *arg = term();
+		vec_push(node->stmt_vec, arg);
+		consume(',');
+	}
 	return node;
 }
 
@@ -248,9 +254,6 @@ Node *term() {
 		// 次に "(" が来たら関数名(関数呼び出し), 来なかったら変数名
 		if (consume('(')) {
 			Node *node = new_node_call(name);
-			if (!consume(')')) {
-				error_at(((Token *)tokens->data[pos])->input, "開き括弧に対応する閉じ括弧がありません");
-			}
 			return node;
 		}
 		register_val(name);

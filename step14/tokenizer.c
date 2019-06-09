@@ -121,7 +121,7 @@ void tokenize() {
 
 		if (*p == '+' || *p == '-' || *p == '*' || *p == '/'
 			|| *p == '(' || *p == ')' || *p == ';' || *p == '{'
-			|| *p == '}') {
+			|| *p == '}' || *p == ',') {
 			token->ty = *p;
 			token->input = p;
 			vec_push(tokens, token);

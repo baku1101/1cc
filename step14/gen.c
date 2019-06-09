@@ -146,6 +146,18 @@ void gen(Node *node) {
 	}
 
 	if (node->ty == ND_CALL) {
+		char reg[6][4] = {"rdi", "rsi", "rdx", "rcx", "r8d", "r9d"};
+		for (int i = 0; i < node->stmt_vec->len; i++) {
+			Node *arg = node->stmt_vec->data[i];
+			if (arg->ty == ND_NUM) {
+				printf("  mov %s, %d\n",reg[i], arg->val);
+			}
+			if (arg->ty == ND_IDENT) {
+				gen_lval(arg);
+				printf("  pop rax\n");
+				printf("  mov %s, [rax]\n", reg[i]);
+			}
+		}
 		printf("  call %s\n",node->name);
 		printf("  push 1\n"); // ダミー
 		return;
